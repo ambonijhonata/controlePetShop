@@ -10,6 +10,7 @@ import com.brasil.petshop.model.Atendimento;
 import java.lang.ModuleLayer.Controller;
 import java.sql.Connection;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -31,7 +32,7 @@ public class MainView extends javax.swing.JFrame {
         ConectarBanco conectarBanco = new ConectarBanco();
         connection = conectarBanco.getConnection();
         
-        controller = new MainViewController(connection);                
+        controller = new MainViewController(connection);
     }
 
     /**
@@ -52,6 +53,9 @@ public class MainView extends javax.swing.JFrame {
         jButtonInformacoesAtendimento = new javax.swing.JButton();
         jButtonCadastrarAtendimento = new javax.swing.JButton();
         jButtonCadastrarAnimal = new javax.swing.JButton();
+        jButtonEditarAtendimento = new javax.swing.JButton();
+        jButtonFinalizarAtendimento = new javax.swing.JButton();
+        jComboBoxSituacoes = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -64,11 +68,11 @@ public class MainView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Atendimento", "Animal", "Situação"
+                "Atendimento", "Animal", "Funcionário", "Situação"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, true
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -76,6 +80,12 @@ public class MainView extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(jTableAgendamentos);
+        if (jTableAgendamentos.getColumnModel().getColumnCount() > 0) {
+            jTableAgendamentos.getColumnModel().getColumn(0).setResizable(false);
+            jTableAgendamentos.getColumnModel().getColumn(1).setResizable(false);
+            jTableAgendamentos.getColumnModel().getColumn(2).setResizable(false);
+            jTableAgendamentos.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         jComboBoxDiasDaSemana.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SEGUNDA-FEIRA", "TERÇA-FEIRA", "QUARTA-FEIRA", "QUINTA-FEIRA", "SEXTA-FEIRA" }));
 
@@ -100,7 +110,23 @@ public class MainView extends javax.swing.JFrame {
             }
         });
 
-        jButtonCadastrarAnimal.setText("Cadastrar Animal");
+        jButtonCadastrarAnimal.setText("Animais");
+
+        jButtonEditarAtendimento.setText("Editar Atendimento");
+        jButtonEditarAtendimento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEditarAtendimentoActionPerformed(evt);
+            }
+        });
+
+        jButtonFinalizarAtendimento.setText("Finalizar Atendimento");
+        jButtonFinalizarAtendimento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFinalizarAtendimentoActionPerformed(evt);
+            }
+        });
+
+        jComboBoxSituacoes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pendente", "Em andamento", "Finalizado" }));
 
         javax.swing.GroupLayout jPanelAtendimentosLayout = new javax.swing.GroupLayout(jPanelAtendimentos);
         jPanelAtendimentos.setLayout(jPanelAtendimentosLayout);
@@ -109,20 +135,25 @@ public class MainView extends javax.swing.JFrame {
             .addGroup(jPanelAtendimentosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelAtendimentosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 938, Short.MAX_VALUE)
                     .addGroup(jPanelAtendimentosLayout.createSequentialGroup()
-                        .addGroup(jPanelAtendimentosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelAtendimentosLayout.createSequentialGroup()
-                                .addComponent(jComboBoxDiasDaSemana, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonListar))
-                            .addGroup(jPanelAtendimentosLayout.createSequentialGroup()
-                                .addComponent(jButtonInformacoesAtendimento)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonCadastrarAtendimento)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonCadastrarAnimal)))
-                        .addGap(0, 399, Short.MAX_VALUE)))
+                        .addComponent(jComboBoxDiasDaSemana, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxSituacoes, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonListar)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelAtendimentosLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonFinalizarAtendimento)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonInformacoesAtendimento)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonEditarAtendimento)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonCadastrarAtendimento)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonCadastrarAnimal)))
                 .addContainerGap())
         );
         jPanelAtendimentosLayout.setVerticalGroup(
@@ -131,15 +162,18 @@ public class MainView extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addGroup(jPanelAtendimentosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBoxDiasDaSemana, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonListar))
+                    .addComponent(jButtonListar)
+                    .addComponent(jComboBoxSituacoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelAtendimentosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonInformacoesAtendimento)
                     .addComponent(jButtonCadastrarAtendimento)
-                    .addComponent(jButtonCadastrarAnimal))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButtonCadastrarAnimal)
+                    .addComponent(jButtonEditarAtendimento)
+                    .addComponent(jButtonFinalizarAtendimento))
+                .addContainerGap())
         );
 
         jDesktopPaneMainView.setLayer(jPanelAtendimentos, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -157,8 +191,8 @@ public class MainView extends javax.swing.JFrame {
             jDesktopPaneMainViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jDesktopPaneMainViewLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanelAtendimentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanelAtendimentos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -183,28 +217,76 @@ public class MainView extends javax.swing.JFrame {
 
     private void jButtonCadastrarAtendimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCadastrarAtendimentoActionPerformed
         // TODO add your handling code here:
+        DadosAtendimentoView tela = new DadosAtendimentoView(connection, 0, false, false, true);
+        jDesktopPaneMainView.add(tela);
+        tela.setVisible(true);
     }//GEN-LAST:event_jButtonCadastrarAtendimentoActionPerformed
 
     private void jButtonListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonListarActionPerformed
         // TODO add your handling code here:
-        System.out.println(jComboBoxDiasDaSemana.getSelectedItem());
-        listaAtendimentos = controller.buscarAtendimentos(jComboBoxDiasDaSemana.getSelectedItem().toString());
+        listaAtendimentos = controller.buscarAtendimentos(jComboBoxDiasDaSemana.getSelectedItem().toString(), jComboBoxSituacoes.getSelectedItem().toString());
         
         DefaultTableModel tabela = (DefaultTableModel) jTableAgendamentos.getModel();
         tabela.setRowCount(0);
         
-        for(Atendimento a : listaAtendimentos){
-            Object[] dados = {a.getCodigo(), a.getAnimal().getNome(), a.getSituacao().getDescricao()};
+        for (Atendimento a : listaAtendimentos) {
+            Object[] dados = {a.getCodigo(), a.getAnimal().getNome(), a.getFuncionario().getNome(), a.getSituacao().getDescricao()};
             tabela.addRow(dados);
         }
     }//GEN-LAST:event_jButtonListarActionPerformed
 
     private void jButtonInformacoesAtendimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInformacoesAtendimentoActionPerformed
         // TODO add your handling code here:
-        DadosAtendimentoView tela = new DadosAtendimentoView(connection, 0);
-        jDesktopPaneMainView.add(tela);
-        tela.setVisible(true);
+        if (jTableAgendamentos.getSelectedRow() != -1) {
+            int idAtendimento = Integer.parseInt(jTableAgendamentos.getValueAt(jTableAgendamentos.getSelectedRow(), 0).toString());
+            DadosAtendimentoView tela = new DadosAtendimentoView(connection, idAtendimento, true, false, false);
+            jDesktopPaneMainView.add(tela);
+            tela.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor selecione uma linha.", "Atenção", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonInformacoesAtendimentoActionPerformed
+
+    private void jButtonEditarAtendimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarAtendimentoActionPerformed
+        // TODO add your handling code here:
+        if (jTableAgendamentos.getSelectedRow() != -1) {
+            if (jTableAgendamentos.getValueAt(jTableAgendamentos.getSelectedRow(), 3).equals("Em andamento")) {
+                JOptionPane.showMessageDialog(null, "Não é possível editar agendamentos com a situação 'Em andamento'.", "Atenção", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            if (jTableAgendamentos.getSelectedRow() != -1) {
+                DadosAtendimentoView tela = new DadosAtendimentoView(connection, Integer.parseInt(jTableAgendamentos.getValueAt(jTableAgendamentos.getSelectedRow(), 0).toString()), false, true, false);
+                jDesktopPaneMainView.add(tela);
+                tela.setVisible(true);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor selecione um servico para editar.", "Atenção", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonEditarAtendimentoActionPerformed
+
+    private void jButtonFinalizarAtendimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFinalizarAtendimentoActionPerformed
+        // TODO add your handling code here:
+        if (jTableAgendamentos.getSelectedRow() != -1) {
+            if (jTableAgendamentos.getValueAt(jTableAgendamentos.getSelectedRow(), 3).toString().equals("Finalizado")) {
+                JOptionPane.showMessageDialog(null, "Atendimento já está finalizado.", "Atenção", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            controller.finalizarAtendimento(Integer.parseInt(jTableAgendamentos.getValueAt(jTableAgendamentos.getSelectedRow(), 0).toString()), "Finalizado");
+            
+            listaAtendimentos = controller.buscarAtendimentos(jComboBoxDiasDaSemana.getSelectedItem().toString(), jComboBoxSituacoes.getSelectedItem().toString());;
+            
+            DefaultTableModel tabela = (DefaultTableModel) jTableAgendamentos.getModel();
+            tabela.setRowCount(0);
+            
+            for (Atendimento a : listaAtendimentos) {
+                Object[] dados = {a.getCodigo(), a.getAnimal().getNome(), a.getFuncionario().getNome(), a.getSituacao().getDescricao()};
+                tabela.addRow(dados);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma linha.", "Atenção", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonFinalizarAtendimentoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -245,9 +327,12 @@ public class MainView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCadastrarAnimal;
     private javax.swing.JButton jButtonCadastrarAtendimento;
+    private javax.swing.JButton jButtonEditarAtendimento;
+    private javax.swing.JButton jButtonFinalizarAtendimento;
     private javax.swing.JButton jButtonInformacoesAtendimento;
     private javax.swing.JButton jButtonListar;
     private javax.swing.JComboBox<String> jComboBoxDiasDaSemana;
+    private javax.swing.JComboBox<String> jComboBoxSituacoes;
     private javax.swing.JDesktopPane jDesktopPaneMainView;
     private javax.swing.JPanel jPanelAtendimentos;
     private javax.swing.JScrollPane jScrollPane1;

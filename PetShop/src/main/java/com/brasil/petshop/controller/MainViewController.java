@@ -21,10 +21,15 @@ public class MainViewController {
         this.connection = connection;
     }
 
-    public List<Atendimento> buscarAtendimentos(String diaSemana) {
+    public List<Atendimento> buscarAtendimentos(String diaSemana, String situacao) {
         AtendimentoDAO atendimentoDAO = new AtendimentoDAO(connection);
-        List<Atendimento> atendimentos = atendimentoDAO.buscarAtendimentoByDiaDaSemana(diaSemana);
+        List<Atendimento> atendimentos = atendimentoDAO.buscarAtendimentoByDiaDaSemana(diaSemana, situacao);
 
         return atendimentos;
+    }
+     
+    public void finalizarAtendimento(int codigoAtendimento, String situacao) {
+        AtendimentoDAO dao = new AtendimentoDAO(connection);
+        dao.atualizaSituacaoAtendimento(codigoAtendimento, situacao);
     }
 }
